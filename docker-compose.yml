@@ -1,0 +1,22 @@
+version: '3.7'
+
+services:
+  aptly:
+    build: ./aptly
+    image: bonddim/aptly-api
+    container_name: aptly-server
+    restart: always
+    volumes:
+      - /srv/aptly_data:/opt/aptly
+
+  nginx:
+    image: nginx:latest
+    container_name: nginx-server
+    restart: always
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx:/etc/nginx/conf.d:ro
+      - /srv/aptly_data/public:/srv/aptly_data/public:ro
+    depends_on:
+      - aptly
