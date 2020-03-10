@@ -7,6 +7,24 @@ if [[ ! -f /opt/aptly/secring.gpg ]] || [[ ! -f /opt/aptly/pubring.gpg ]]; then
   echo "Generating new GPG keys"
   # generate enough entropy
   cp -a /dev/urandom /dev/random
+
+  # create batch file
+  cat > /root/.gnupg/gpg_batch <<-EOF
+	%echo Generating a default key
+	Key-Type: RSA
+	Key-Length: 4096
+	Subkey-Type: ELG-E
+	Subkey-Length: 1024
+	Name-Real: ${FULL_NAME:-"Aptly Repo"}
+	Name-Comment: self-hosted deb repository
+	Name-Email: ${EMAIL:-"aptly@repo.local"}
+	Expire-Date: 0
+	%pubring /opt/aptly/pubring.gpg
+	%secring /opt/aptly/secring.gpg
+	%commit
+	%echo done
+EOF
+
   # run unattended key generation
   gpg --batch --gen-key /root/.gnupg/gpg_batch
 fi
