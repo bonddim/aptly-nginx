@@ -16,7 +16,8 @@ RUN apt-key adv --keyserver pool.sks-keyservers.net --recv-keys ED75B5A4483DA07C
 # add config files
 COPY --chown=root:root assets /
 # ensure correct permissions
-RUN chmod -R go-rwx /root/.gnupg
+RUN chmod -R go-rwx /root/.gnupg && \
+    chmod +x /entrypoint.sh
 
 EXPOSE 8080
 VOLUME [ "/opt/aptly" ]
