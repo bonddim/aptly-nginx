@@ -26,7 +26,7 @@ if [[ ! -f /opt/aptly/secring.gpg ]] || [[ ! -f /opt/aptly/pubring.gpg ]]; then
 EOF
 
   # run unattended key generation
-  gpg --batch --gen-key /root/.gnupg/gpg_batch
+  gpg1 --batch --gen-key /root/.gnupg/gpg_batch
 fi
 
 # link created keys to /root/.gnupg
@@ -36,27 +36,16 @@ ln -sf /opt/aptly/secring.gpg /root/.gnupg/secring.gpg
 # export the GPG public key
 if [[ ! -f /opt/aptly/public/public.key ]] || [[ "$(stat -c%s /opt/aptly/public/public.key)" == "0" ]]; then
   mkdir -p /opt/aptly/public
-  gpg --export --armor > /opt/aptly/public/public.key
-fi
-
-# Import Ubuntu keyrings if they exist
-if [[ -f /usr/share/keyrings/ubuntu-archive-keyring.gpg ]]; then
-  gpg --list-keys
-  gpg --no-default-keyring                                     \
-      --keyring /usr/share/keyrings/ubuntu-archive-keyring.gpg \
-      --export |                                               \
-  gpg --no-default-keyring                                     \
-      --keyring trustedkeys.gpg                                \
-      --import
+  gpg1 --export --armor > /opt/aptly/public/public.key
 fi
 
 # Import Debian keyrings if they exist
 if [[ -f /usr/share/keyrings/debian-archive-keyring.gpg ]]; then
-  gpg --list-keys
-  gpg --no-default-keyring                                     \
+  gpg1 --list-keys
+  gpg1 --no-default-keyring                                     \
       --keyring /usr/share/keyrings/debian-archive-keyring.gpg \
       --export |                                               \
-  gpg --no-default-keyring                                     \
+  gpg1 --no-default-keyring                                     \
       --keyring trustedkeys.gpg                                \
       --import
 fi
